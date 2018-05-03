@@ -1,0 +1,72 @@
+{
+  "name": "postcss-syntaxes",
+  "version": "0.0.0",
+  "description": "Automatically switch PostCSS syntax by file extensions",
+  "main": "lib/index.js",
+  "scripts": {
+    "install": "lerna bootstrap --no-ci",
+    "report-coverage": "codecov",
+    "lint:eclint": "eclint check $(git ls-files --recurse-submodules)",
+    "lint:eslint": "eslint $(git ls-files --recurse-submodules | grep \\.js$)",
+    "prepare": "ncu -a && node link.js && lerna ls && lerna exec \"ncu -a\"",
+    "pretest": "check-node-version --node \"< 8\" || env npm-run-all --parallel lint:*",
+    "mocha": "mocha --require ./link-mod packages/*/test/*.js --no-timeouts",
+    "test": "nyc npm run mocha",
+    "debug": "npm run mocha -- --inspect-brk"
+  },
+  "nyc": {
+    "reporter": [
+      "lcov",
+      "text"
+    ],
+    "exclude": [
+      "**/coverage/**",
+      "**/test/**"
+    ],
+    "all": true,
+    "cache": true,
+    "check-coverage": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gucong3000/postcss-syntaxes.git"
+  },
+  "keywords": [
+    "postcss",
+    "syntax",
+    "switch",
+    "extension"
+  ],
+  "author": "gucong",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gucong3000/postcss-syntaxes/issues"
+  },
+  "homepage": "https://github.com/gucong3000/postcss-syntaxes#readme",
+  "devDependencies": {
+    "autoprefixer": "^9.1.5",
+    "chai": "^4.1.2",
+    "check-node-version": "^3.2.0",
+    "codecov": "^3.1.0",
+    "eclint": "^2.8.0",
+    "eslint": "^5.6.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "exec-extra": "^2.4.1",
+    "json5": "^2.0.1",
+    "lerna": "^3.4.0",
+    "mocha": "^5.2.0",
+    "npm-check-updates": "^2.14.2",
+    "npm-run-all": "^4.1.3",
+    "nyc": "^13.0.1",
+    "postcss": "^7.0.2",
+    "postcss-less": "^2.0.0",
+    "postcss-parser-tests": "^6.3.0",
+    "postcss-safe-parser": "^4.0.1",
+    "postcss-scss": "^2.0.0",
+    "sugarss": "^2.0.0"
+  }
+}
