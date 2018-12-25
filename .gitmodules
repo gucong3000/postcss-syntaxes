@@ -1,9 +1,6 @@
 [submodule "packages/postcss-syntax"]
 	path = packages/postcss-syntax
 	url = https://github.com/gucong3000/postcss-syntax.git
-[submodule "packages/postcss-styled"]
-	path = packages/postcss-styled
-	url = https://github.com/gucong3000/postcss-styled.git
 [submodule "packages/postcss-jsx"]
 	path = packages/postcss-jsx
 	url = https://github.com/gucong3000/postcss-jsx.git

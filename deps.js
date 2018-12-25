@@ -1,6 +1,7 @@
 // curl -s https://raw.githubusercontent.com/gucong3000/postcss-syntaxes/HEAD/deps.js | node
 "use strict";
 const fs = require("fs");
+const path = require("path");
 const https = require("https");
 const headers = {
 	"User-Agent": "gucong3000/postcss-syntaxes (https://github.com/gucong3000/postcss-syntaxes)",
@@ -34,9 +35,8 @@ function got (path) {
 }
 
 got("/repos/gucong3000/postcss-syntaxes/git/trees/HEAD").then(head => (
-	head.tree.find(blob => blob.path === "packages").url
+	got(head.tree.find(blob => blob.path === "packages").url)
 ))
-	.then(got)
 	.then(packages => {
 		const rst = {};
 		packages.tree.forEach(child => {
@@ -45,18 +45,25 @@ got("/repos/gucong3000/postcss-syntaxes/git/trees/HEAD").then(head => (
 			}
 		});
 		return rst;
-	})
-	.catch(error => {
+	}).catch(error => {
 		console.log(error);
 		return {};
-	})
-	.then(versions => {
-		let pkg = require("./package.json");
+	}).then(versions => {
+		let pkg = require(path.resolve("package.json"));
 		Object.keys(pkg).filter(key => /^(\w+D|d)ependencies$/.test(key)).forEach(deps => {
-			Object.keys(pkg[deps]).filter(pkgName => /^postcss-(syntax|styled|jsx|html|markdown)$/.test(pkgName)).forEach(pkgName => {
-				pkg[deps][pkgName] = `github:gucong3000/${pkgName}#${versions[pkgName] || "HEAD"}`;
+			Object.keys(pkg[deps]).filter(pkgName => /^postcss-(syntax|jsx|html|markdown)$/.test(pkgName)).forEach(pkgName => {
+				let newVersion = versions[pkgName];
+				if (!newVersion) {
+					if (/^\W*\d+\.\d+\.\d+$/.test(pkg[deps][pkgName])) {
+						newVersion = "HEAD";
+					} else {
+						return;
+					}
+				}
+				pkg[deps][pkgName] = `github:gucong3000/${pkgName}#${newVersion}`;
 			});
 		});
+
 		pkg = JSON.stringify(pkg, null, 2);
 		console.log(pkg);
 		if (process.env.CI) {
